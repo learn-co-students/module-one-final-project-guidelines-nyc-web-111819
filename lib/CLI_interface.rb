@@ -6,10 +6,14 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'active_record'
 
-def intro
-    puts "Hello New Yorker! Been here before?"
 
-    user_input = gets.chomp
+def findTrainStatus(trainName)
+    (Line.find_by(train_name: trainName)).status
+end
+
+def intro
+  puts "Hello New Yorker! Been here before?"
+  user_input = gets.chomp
     if user_input == "Yes" || user_input == "yes" || user_input == "Y" || user_input == "y"
         sleep(0.6)
         puts "Welcome back!" 
@@ -40,8 +44,7 @@ end
 def train_selection
     puts "What train are you taking today?"
     user_input = gets.chomp
-    my_train = Line.find_by(train_name: user_input)
-    puts my_train.status
+    puts findTrainStatus(user_input)
 end 
 
 sleep(1)
