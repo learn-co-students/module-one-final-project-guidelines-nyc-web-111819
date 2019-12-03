@@ -12,9 +12,9 @@ def sorting_api_data
     response["service"]["subway"]["line"][0..-2].each do |line|
         line["name"].split("").each{|route| lineHash[route] = line["status"]}
     end
-    # puts lineHash
-
+    
     lineHash.each do |key, value|
         Line.create(train_name: key, status: value)
     end
+    
 end
