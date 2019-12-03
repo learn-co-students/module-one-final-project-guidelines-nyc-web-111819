@@ -1,5 +1,5 @@
 class Event < ActiveRecord::Base
-    has_many :concerts
-    has_many :users
-    
+    belongs_to :concert
+    belongs_to :user
+
 end
