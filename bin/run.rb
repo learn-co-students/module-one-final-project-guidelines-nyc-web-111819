@@ -25,5 +25,5 @@ events = response_hash["resultsPage"]["results"]["event"].select do |event|
     event["performance"][0]["displayName"] == user_input 
 end
 
-
+binding.pry
 puts "HELLO WORLD"
