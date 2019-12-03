@@ -1,3 +1,6 @@
+require 'colorize'
+require 'colorized_string'
+
 PROMPT = TTY::Prompt.new
 
 @@user = nil
@@ -9,18 +12,44 @@ end
 
 #welcome
 def welcome
-    puts "Welcome to Music Source"
-    create_user
+    puts "🎶 " " 🤩  " "Welcome to Music Source!" "  🤩 " " 🎶"
+    new_user
     options
     get_artist_events
     binding.pry
 end
 
 #login to get username
-def create_user
-    puts "Input name:"
-    user_name = gets.chomp
-    @@user = User.create(name: "#{user_name}") 
+
+#Allows user to Sign up or Login
+    def new_user
+        new_user = PROMPT.yes?("Would you like to Sign Up?😏".colorize(:green))
+        if new_user == true
+            signup
+        else 
+            login
+        end
+    end
+
+#Helper method that asks User to sign up
+    def signup
+        username = PROMPT.ask("What's your Username?", required: true)
+        @@user = create_user(username)
+    end
+
+    def create_user(username)
+        User.create(name: username) 
+    end
+
+def login
+    username = PROMPT.ask("Welcome Back!😄 What's your Username?🤔🧐".colorize(:yellow), required: true)
+        user = User.find_by(name: username)
+        if user 
+            @@user = user
+        else
+            PROMPT.error("Sorry Username Not Found!")
+            create_user
+        end
 end
 
 def options 
@@ -33,34 +62,40 @@ def options
     end 
 
     if selection == 1 
-        get_artist_events
-        sleep(2)
-        options
+        artist = artist_prompt
+        event_list = get_artist_events(artist)
+        choose_concert(event_list)
+        go_back
     elsif 
         selection == 2
         show_my_events 
-        sleep(2)
-        options
+        sleep(6)
+        go_back
     elsif 
         selection == 3 
-        puts "You just deleted your event!"
-        sleep(2)
-        options
-        #delete_event
+        delete_event
+        puts "Your event was succesfully deleted!"
+        go_back
     elsif 
         selection == 4 
         delete_myself 
-        sleep(2)
-        options
+        go_back
+    else
+        sleep (1)
+            puts "Goodbye!"
+            exit
     end
 end 
 
-#get artist input from user 
-def get_artist_events
+def artist_prompt
     puts "Input your favorite artist:"
     user_input = gets.chomp 
+end
+
+
+def get_artist_events(artist)
     #get artist id
-    artist_string = RestClient.get("https://api.songkick.com/api/3.0/search/artists.json?apikey=io09K9l3ebJxmxe2&query=#{user_input}")
+    artist_string = RestClient.get("https://api.songkick.com/api/3.0/search/artists.json?apikey=io09K9l3ebJxmxe2&query=#{artist}")
     artist_hash = JSON.parse(artist_string)
     artist_id = artist_hash["resultsPage"]["results"]["artist"][0]["id"]
 
@@ -75,8 +110,12 @@ def get_artist_events
     event_array = events_hash["resultsPage"]["results"]["event"].map do |event|
         event["displayName"]
     end 
+end
 
-    selection = PROMPT.select("Choose your concert?", event_array)
+
+
+def choose_concert(event_list)
+    selection = PROMPT.select("Choose your concert?", event_list)
     new_concert = Concert.create(name: "#{selection}")
     new_event = Event.create(user_id: "#{@@user.id}", concert_id: "#{new_concert.id}")
     puts "You just saved an event!"
@@ -84,12 +123,49 @@ def get_artist_events
 end 
 
 def show_my_events 
-    Event.all.each do |event|
-        if event.user_id == @@user.id
-            puts Concert.find(event.concert_id).name
-        end 
+    concert_names.each do |concert_name|
+        puts concert_name
     end 
+    choice = PROMPT.select("Would you like to go back?", ["yes"])
+    if choice == "yes"
+        go_back
+    end  
+
 end 
+
+def concert_names
+    @@user.reload.concerts.map do |concert|
+        concert.name
+    end 
+end
+
+# def event_objects
+#     # Event.all.select do |event|
+#     #     event.user_id == @@user.id
+#     # end
+# end
+
+def select_event
+    concert_names2 = PROMPT.select("Which event are you looking for?", concert_names)
+    concert_object = Concert.find_by(name: "#{concert_names2}")
+    binding.pry
+    Event.find_by(concert_id: concert_object.id)
+#    test = @@user.events.filter do |event|
+#         concert_objects.find do |concert_object|
+#             event.concert_id == concert_object.id 
+#         end 
+#     end 
+    
+          # menu.choice "Go Back to Main Menu"
+      # end
+
+       #if event == "Go Back to Main Menu"
+       #options
+       #end
+   
+   end
+
+
 
 def destroy_all_users
     User.all.each do |user|
@@ -101,9 +177,22 @@ def delete_myself
     @@user.destroy
 end 
 
-# def delete_event(event)
+    def delete_event
+        puts "Here are #{@@user.name}'s events!"
+        my_event = select_event
+        binding.pry
+        my_event.destroy
+        @@user
+         puts "Event Succesfully Deleted!"
+        PROMPT.yes?("Would you like to go back?")
+        go_back  
+        
+    end
 
-# end 
 
 
+def go_back
+    sleep(2)
+    options
+end
 
