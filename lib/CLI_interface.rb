@@ -6,8 +6,11 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'active_record'
 
-puts "Hello New Yorker! Been here before?"
+def findTrainStatus(trainName)
+    (Line.find_by(train_name: trainName)).status
+end
 
+puts "Hello New Yorker! Been here before?"
 user_input = gets.chomp
     if user_input == "Yes" || user_input == "yes" || user_input == "Y" || user_input == "y"
         sleep(0.7)
@@ -39,8 +42,7 @@ puts "What train are you taking today?"
 
 user_input = gets.chomp
 # binding.pry
-my_train = Line.find_by(train_name: user_input)
-puts my_train.status
+puts findTrainStatus(user_input)
 
 sleep(1)
 puts "Would you like to check another train?"
