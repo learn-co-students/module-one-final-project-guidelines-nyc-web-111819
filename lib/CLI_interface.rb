@@ -1,6 +1,10 @@
 
+require_relative "../config/environment.rb"
 require 'pry'
 require 'io/console'
+require 'active_support'
+require 'active_support/core_ext'
+require 'active_record'
 
 puts "Hello New Yorker! Been here before?"
 
@@ -34,8 +38,9 @@ user_input = gets.chomp
 puts "What train are you taking today?"
 
 user_input = gets.chomp
-
-# Custom message about train status
+# binding.pry
+my_train = Line.find_by(train_name: user_input)
+puts my_train.status
 
 sleep(1)
 puts "Would you like to check another train?"
