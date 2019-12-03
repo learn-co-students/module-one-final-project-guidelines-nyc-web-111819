@@ -3,14 +3,10 @@ require 'rest-client'
 require 'json'
 require 'pry'
 
-#welcome
-puts "Welcome to music source"
-puts "Input name"
 
-#login to get username
-gets.chomp 
 
-#create a user
+run 
+create_user
 
 puts "Input your favorite artist:"
 #get artist
