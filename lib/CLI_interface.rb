@@ -42,26 +42,31 @@ def intro
 end
 
 def train_selection
-    puts "What train are you taking today?"
+    puts "What train would you like to take?"
     user_input = gets.chomp
     puts findTrainStatus(user_input)
 end 
 
-sleep(1)
-puts "Would you like to check another train?"
-
-user_input = gets.chomp
-
-if user_input == "Yes" || user_input == "yes" || user_input == "Y" || user_input == "y"
-    sleep(0.7)
-    puts "What train are you thinking of?" 
-    user_input = gets.chomp
-    
-    # Custom message about train status
-else
-    sleep(0.7)
-    puts "Have a great day!"
+def another_train
+    f = true
+    while f == true
+        puts "Would you like to check another train?"
+        user_input = gets.chomp
+        if user_input == "Yes" || user_input == "yes" || user_input == "Y" || user_input == "y"
+            sleep(0.7)
+            train_selection
+        else
+            sleep(0.7)
+            puts "Ok, have a great day!"
+            f = false
+        end
+    end
 end
 
+def runner
+    intro
+    train_selection
+    another_train
+end
 
-# binding.pry
+runner
