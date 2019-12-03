@@ -7,4 +7,5 @@ gem "pry"
 gem "require_all"
 gem "rake"
 gem "rest-client"
+gem 'tty-prompt'
 
