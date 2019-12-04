@@ -12,6 +12,7 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2)
+    cgi (0.1.0)
     coderay (1.1.2)
     concurrent-ruby (1.1.5)
     domain_name (0.5.20190701)
@@ -27,10 +28,13 @@ GEM
     mime-types (3.3)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2019.1009)
+    mini_portile2 (2.4.0)
     minitest (5.13.0)
     mustermann (1.0.3)
     necromancer (0.5.1)
     netrc (0.11.0)
+    nokogiri (1.10.7)
+      mini_portile2 (~> 2.4.0)
     pastel (0.7.3)
       equatable (~> 0.6)
       tty-color (~> 0.5)
@@ -82,7 +86,9 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport
+  cgi
   json
+  nokogiri
   pry
   rake
   require_all
@@ -90,5 +96,6 @@ DEPENDENCIES
   sinatra-activerecord
   sqlite3 (~> 1.4)
   tty-prompt
+
 BUNDLED WITH
    2.0.2

@@ -72,7 +72,15 @@ def train_selection(currUser)
         if Line.find_by(train_name: user_input) == nil
             puts "Invalid train line!"
         else
-            puts findTrainStatus(currUser, user_input)
+            status = findTrainStatus(currUser, user_input)
+            puts status
+            if status != "GOOD SERVICE"
+                puts "Press 'e' for more information or any other key to continue"
+                user = gets.chomp
+                if user == 'e'
+                    puts status = (Line.find_by(train_name: user_input)).elaborate
+                end
+            end
             f = true
         end
     end
@@ -97,7 +105,6 @@ def another_train(currUser)
 end
 
 def view_searches(currUser)
-    puts ""
     Search.where(user_name: currUser.user_name).order(created_at: :desc).each{|search| puts "[#{search.time}] #{search.train_name}: #{search.train_status}"}
 end
 

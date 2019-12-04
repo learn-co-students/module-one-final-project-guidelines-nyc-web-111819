@@ -10,3 +10,5 @@ gem 'rest-client'
 gem 'json'
 gem 'activesupport'
 gem "rake"
+gem 'nokogiri'
+gem 'cgi'
