@@ -18,13 +18,30 @@ def intro
         sleep(0.6)
         puts "Welcome back!" 
         sleep(0.6)
-        puts "What's your account name?"
-        user_input = gets.chomp
+        f = true
+        while f == true
+            puts "What's your account name?"
+            user_input = gets.chomp
+            if User.find_by(user_name: user_input) == nil
+                puts "User not found!"
+            else
+                currUser = User.find_by(user_name: user_input)
+                f = false
+            end
+        end
         sleep(0.6)
-        $stdout.puts "Password: "
-        password = $stdin.noecho(&:gets)
-        password.strip!
+        f = true
+        while f == true
+            $stdout.puts "Password: "
+            password = $stdin.noecho(&:gets)
+            password.strip!
+            if password == currUser.password
+                f = false
+            else
+                puts "Incorrect Password!"
+            end
         sleep(0.6)
+        end
     else
         puts "Let's create an account for you!"
         sleep(0.5)
@@ -65,8 +82,22 @@ end
 
 def runner
     intro
-    train_selection
-    another_train
+    f = true
+    while f == true
+        puts "Press 't' to select a train, 's' to view search history, or 'x' to exit, "
+        input = gets.chomp
+        if input == 't'
+            train_selection
+            another_train
+        elsif input == 's'
+            view_searches
+        elsif input == 'x'
+            puts "Goodbye!"
+            f = false
+        else
+            puts "Invalid input!"
+        end
+    end
 end
 
 runner
