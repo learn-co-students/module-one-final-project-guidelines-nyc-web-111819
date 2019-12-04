@@ -5,6 +5,7 @@ require 'io/console'
 require 'active_support'
 require 'active_support/core_ext'
 require 'active_record'
+require_relative 'api.rb'
 require "tty-prompt"
 
 
@@ -16,8 +17,8 @@ def findTrainStatus(currUser, trainName)
 end
 
 def intro
-  puts "Hello New Yorker! Been here before?"
-  user_input = gets.chomp
+    puts "Hello New Yorker! Been here before?"
+    user_input = gets.chomp
     if user_input == "Yes" || user_input == "yes" || user_input == "Y" || user_input == "y"
         sleep(0.5)
         puts "Welcome back!" 
@@ -77,7 +78,12 @@ def train_selection(currUser)
                 puts "Press 'e' for more information or any other key to continue"
                 user = gets.chomp
                 if user == 'e'
-                    puts status = (Line.find_by(train_name: user_input)).elaborate
+                    status = (Line.find_by(train_name: user_input)).elaborate
+                    if status.class == String
+                        puts status
+                    else
+                        status.flatten.each{|alert| puts alert}
+                    end
                 end
             end
             f = true
@@ -104,10 +110,17 @@ def another_train(currUser)
 end
 
 def view_searches(currUser)
-    Search.where(user_name: currUser.user_name).order(created_at: :desc).each{|search| puts "[#{search.time}] #{search.train_name}: #{search.train_status}"}
+    if Search.where(user_name: currUser.user_name) == []
+        sleep(0.5)
+        puts "No history!"
+    else
+        sleep(0.5)
+        Search.where(user_name: currUser.user_name).order(created_at: :desc).each{|search| puts "[#{search.time}] #{search.train_name}: #{search.train_status}"}
+    end
 end
 
 def runner
+    sorting_api_data
     currUser = intro
     f = true
     while f == true
