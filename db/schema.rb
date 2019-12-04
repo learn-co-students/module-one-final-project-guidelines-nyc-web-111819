@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(version: 2019_12_03_212056) do
   create_table "lines", force: :cascade do |t|
     t.string "train_name"
     t.string "status"
+    t.string "elaborate"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
