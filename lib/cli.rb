@@ -1,3 +1,5 @@
+class CLI 
+
 require 'colorize'
 require 'colorized_string'
 
@@ -6,13 +8,21 @@ PROMPT = TTY::Prompt.new
 @@user = nil
 @@concert_name = nil
 
+def self.user 
+    @@user 
+end 
+
+def self.user(input)
+    @@user = input 
+end 
+
 def run
     welcome
 end
 
 #welcome
 def welcome
-    puts "🎶 " " 🤩  " "Welcome to Music Source!" "  🤩 " " 🎶".colorize(:yellow)
+    #puts "🎶 " " 🤩  " "Welcome to Music Source!" "  🤩 " " 🎶".colorize(:yellow)
     new_user
     options
     get_artist_events
@@ -20,11 +30,14 @@ end
 
 #Allows user to Sign up or Login
     def new_user
-        new_user = PROMPT.yes?("Would you like to Sign Up?😏".colorize(:yellow))
-        if new_user == true
-            signup
-        else 
+        choice = PROMPT.select("🎶 " " 🤩  " "Welcome to Music Source!" "  🤩 " " 🎶".colorize(:yellow)) do |option|
+            option.choice "Login", 1 
+            option.choice "Sign up", 2
+        end 
+        if choice == 1
             login
+        elsif choice == 2 
+            signup
         end
     end
 
@@ -35,7 +48,16 @@ end
     end
 
     def create_user(username)
-        User.create(name: "#{username}") 
+        existing_user = User.all.select do |user|
+            user.name == username
+        end 
+        if existing_user != []
+            puts "That username is not available."
+            signup
+        else 
+            User.create(name: "#{username}")
+            puts "You just created a new account!"
+        end
     end
 
 # User login
@@ -46,9 +68,8 @@ def login
             @@user = user
         else
             PROMPT.error("Sorry Username Not Found!")
-            signup
+            new_user
         end
-        binding.pry
 end
 
 def options 
@@ -100,12 +121,24 @@ def get_artist_events(artist)
     #get artist id
     artist_string = RestClient.get("https://api.songkick.com/api/3.0/search/artists.json?apikey=io09K9l3ebJxmxe2&query=#{artist}")
     artist_hash = JSON.parse(artist_string)
+
+     #check if the api could not find an artist by name
+    if artist_hash["resultsPage"]["results"] == {} 
+        puts "Sorry this artist name is not in our system.".colorize(:red)
+        options 
+    end 
     artist_id = artist_hash["resultsPage"]["results"]["artist"][0]["id"]
 
     #look at Songkick and find list of events in a timeframe we set with that particular artist
     events_string = RestClient.get("https://api.songkick.com/api/3.0/artists/#{artist_id}/calendar.json?apikey=io09K9l3ebJxmxe2
      ")
     events_hash = JSON.parse(events_string)
+
+    #check if the API could not return results for the artist
+    if events_hash["resultsPage"]["results"] == {} 
+        puts "Sorry, your artist is not on tour!".colorize(:red)
+        options 
+    end 
          
     #map through and get array of display name for event
     event_array = events_hash["resultsPage"]["results"]["event"].map do |event|
@@ -182,9 +215,9 @@ def update_username
     end
 end
 
-
 def go_back
     sleep(2)
     options
 end
 
+end 
