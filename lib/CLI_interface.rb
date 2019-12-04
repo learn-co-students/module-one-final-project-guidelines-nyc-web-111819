@@ -5,6 +5,7 @@ require 'io/console'
 require 'active_support'
 require 'active_support/core_ext'
 require 'active_record'
+require "tty-prompt"
 
 
 def findTrainStatus(currUser, trainName)
@@ -18,9 +19,9 @@ def intro
   puts "Hello New Yorker! Been here before?"
   user_input = gets.chomp
     if user_input == "Yes" || user_input == "yes" || user_input == "Y" || user_input == "y"
-        sleep(0.6)
+        sleep(0.5)
         puts "Welcome back!" 
-        sleep(0.6)
+        sleep(0.5)
         f = true
         while f == true
             puts "What's your account name?"
@@ -32,34 +33,32 @@ def intro
                 f = false
             end
         end
-        sleep(0.6)
+        sleep(0.5)
         f = true
         while f == true
-            $stdout.puts "Password: "
-            password = $stdin.noecho(&:gets)
-            password.strip!
+            prompt = TTY::Prompt.new(enable_color: false)
+            password = prompt.mask("Password: ")
             if password == currUser.password
                 f = false
             else
                 puts "Incorrect Password!"
             end
-        sleep(0.6)
+        sleep(0.5)
         end
     else
         puts "Let's create an account for you!"
         sleep(0.5)
         puts "What's your name?"
         user_input = gets.chomp
-        sleep(0.6)
+        sleep(0.5)
         puts "Nice to meet you #{user_input}!"
-        $stdout.print "What will be your password? "
-        password = $stdin.noecho(&:gets)
-        password.strip!
+        prompt = TTY::Prompt.new(enable_color: false)
+        password = prompt.mask("What will be your password? ")
         currUser = User.create(user_name: user_input, password: password)
         currUser.save
-        sleep(0.6)
+        sleep(0.5)
         puts "Great, you're all set!"
-        sleep(0.6)
+        sleep(0.5)
     end
     currUser
 end
@@ -105,13 +104,20 @@ def runner
     currUser = intro
     f = true
     while f == true
-        puts "Press 't' to select a train, 's' to view search history, 'c' to clear search history, or 'x' to exit, "
+        puts "Press 't' to select a train, 's' to view search history, 'c' to clear search history, or 'u' to update your password. Press 'x' to exit."
         input = gets.chomp
         if input == 't'
             train_selection(currUser)
             another_train(currUser)
         elsif input == 's'
             view_searches(currUser)
+        elsif input == 'u'
+            prompt = TTY::Prompt.new(enable_color: false)
+            password = prompt.mask("What will be your new password? ")
+            currUser.password = password
+            currUser.save
+            sleep(0.5)
+            puts "Password updated!"
         elsif input == 'x'
             puts "Goodbye!"
             f = false
