@@ -75,15 +75,12 @@ def train_selection(currUser)
             status = findTrainStatus(currUser, user_input)
             puts status
             if status != "GOOD SERVICE"
-                puts "Press 'e' for more information or any other key to continue"
+                puts "Press 'i' for more information or any other key to continue"
                 user = gets.chomp
-                if user == 'e'
+                if user == 'i'
                     status = (Line.find_by(train_name: user_input)).elaborate
-                    if status.class == String
-                        puts status
-                    else
-                        status.flatten.each{|alert| puts alert}
-                    end
+                    puts status
+                    #status.each{|alert| puts alert}
                 end
             end
             f = true
