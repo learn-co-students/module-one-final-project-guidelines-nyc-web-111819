@@ -12,7 +12,7 @@ end
 
 #welcome
 def welcome
-    puts "🎶 " " 🤩  " "Welcome to Music Source!" "  🤩 " " 🎶"
+    puts "🎶 " " 🤩  " "Welcome to Music Source!" "  🤩 " " 🎶".colorize(:yellow)
     new_user
     options
     get_artist_events
@@ -20,7 +20,7 @@ end
 
 #Allows user to Sign up or Login
     def new_user
-        new_user = PROMPT.yes?("Would you like to Sign Up?😏".colorize(:green))
+        new_user = PROMPT.yes?("Would you like to Sign Up?😏".colorize(:yellow))
         if new_user == true
             signup
         else 
@@ -30,46 +30,43 @@ end
 
 #Helper method that asks User to sign up
     def signup
-        username = PROMPT.ask("What's your Username?", required: true)
+        username = PROMPT.ask("Please create a username:".colorize(:yellow), required: true)
         @@user = create_user(username)
     end
 
     def create_user(username)
-        User.create(name: username) 
-        system 'clear'
+        User.create(name: "#{username}") 
     end
 
+# User login
 def login
     username = PROMPT.ask("Welcome Back!😄 What's your Username?🤔🧐".colorize(:yellow), required: true)
         user = User.find_by(name: username)
-        system 'clear'
         if user 
             @@user = user
         else
             PROMPT.error("Sorry Username Not Found!")
-            create_user
+            signup
         end
 end
 
 def options 
-    selection = PROMPT.select("What would you like to do?") do |option|
-        option.choice "Find event by artist", 1
-        option.choice "Show my events", 2
-        option.choice "Delete an event", 3
-        option.choice "Delete account", 4
-        option.choice "Exit", 5
+    selection = PROMPT.select("What would you like to do?".colorize(:magenta)) do |option|
+        option.choice "Find event by artist".colorize(:magenta), 1
+        option.choice "Show my events".colorize(:magenta), 2
+        option.choice "Delete an event".colorize(:magenta), 3
+        option.choice "Delete account".colorize(:magenta), 4
+        option.choice "Exit".colorize(:magenta), 5
     end 
-
     if selection == 1 
         artist = artist_prompt
         event_list = get_artist_events(artist)
         choose_concert(event_list)
-        system 'clear'
         go_back
     elsif 
         selection == 2
         show_my_events 
-        sleep(6)
+        sleep(3)
         go_back
     elsif 
         selection == 3 
@@ -91,7 +88,6 @@ def artist_prompt
     puts "Input your favorite artist:"
     user_input = gets.chomp 
 end
-
 
 def get_artist_events(artist)
     #get artist id
@@ -140,29 +136,10 @@ def event_names
     end 
 end 
 
-# def event_names 
-#     @@user.events.map do |event|
-#         Concert.all.find(event.concert_id).name
-#     end
-# end 
-
 def select_event
     event_name = PROMPT.select("Which event are you looking for?", event_names)
     binding.pry
-    Event.find_by(name: "#{event_name}")
-#    test = @@user.events.filter do |event|
-#         concert_objects.find do |concert_object|
-#             event.concert_id == concert_object.id 
-#         end 
-#     end 
-    
-          # menu.choice "Go Back to Main Menu"
-      # end
-
-       #if event == "Go Back to Main Menu"
-       #options
-       #end
-   
+    Event.find_by(name: "#{event_name}")  
    end
 
 
@@ -178,6 +155,11 @@ def delete_myself
 end 
 
 def delete_event
+    if @@user.events.length == 0 
+        puts "#{@@user.name} has no events!"
+        PROMPT.yes?("Would you like to go back?")
+        go_back  
+    end
     puts "Here are #{@@user.name}'s events!"
     my_event = select_event
     my_event.destroy
