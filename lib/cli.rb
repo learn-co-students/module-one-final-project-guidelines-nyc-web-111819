@@ -48,15 +48,17 @@ def login
             PROMPT.error("Sorry Username Not Found!")
             signup
         end
+        binding.pry
 end
 
 def options 
-    selection = PROMPT.select("What would you like to do?".colorize(:magenta)) do |option|
-        option.choice "Find event by artist".colorize(:magenta), 1
-        option.choice "Show my events".colorize(:magenta), 2
-        option.choice "Delete an event".colorize(:magenta), 3
-        option.choice "Delete account".colorize(:magenta), 4
-        option.choice "Exit".colorize(:magenta), 5
+    selection = PROMPT.select("What would you like to do?") do |option|
+        option.choice "Find event by artist", 1
+        option.choice "Show my events", 2
+        option.choice "Delete an event", 3
+        option.choice "Delete account", 4
+        option.choice "Profile", 5
+        option.choice "Exit", 6
     end 
     if selection == 1 
         artist = artist_prompt
@@ -76,7 +78,12 @@ def options
     elsif 
         selection == 4 
         delete_myself 
+        exit
+    elsif
+        selection == 5
+        update_username
         go_back
+
     else
         sleep (1)
             puts "Goodbye!"
@@ -138,11 +145,8 @@ end
 
 def select_event
     event_name = PROMPT.select("Which event are you looking for?", event_names)
-    binding.pry
-    Event.find_by(name: "#{event_name}")  
-   end
-
-
+    Event.find_by(name: "#{event_name}")
+end
 
 def destroy_all_users
     User.all.each do |user|
@@ -164,12 +168,19 @@ def delete_event
     my_event = select_event
     my_event.destroy
     @@user.reload
-    binding.pry
     puts "Event Succesfully Deleted!"
     PROMPT.yes?("Would you like to go back?")
     go_back  
 end
 
+def update_username
+    puts "Welcome #{@@user.name}, to your profile!"
+    PROMPT.yes?("Would you like to change your Username?")
+    if "yes"
+        input = gets.chomp
+        @@user.update(name: "#{input}")
+    end
+end
 
 
 def go_back
