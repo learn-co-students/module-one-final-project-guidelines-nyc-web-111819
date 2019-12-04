@@ -86,10 +86,12 @@ def another_train(currUser)
         if user_input == "Yes" || user_input == "yes" || user_input == "Y" || user_input == "y"
             sleep(0.7)
             train_selection(currUser)
-        else
+        elsif user_input == "No" || user_input == "no" || user_input == "n" || user_input == "N"
             sleep(0.7)
             puts "Ok, have a great day!"
             f = false
+        else
+            "Invalid input!"
         end
     end
 end
