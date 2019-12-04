@@ -148,7 +148,6 @@ end
 def select_event
     concert_names2 = PROMPT.select("Which event are you looking for?", concert_names)
     concert_object = Concert.find_by(name: "#{concert_names2}")
-    binding.pry
     Event.find_by(concert_id: concert_object.id)
 #    test = @@user.events.filter do |event|
 #         concert_objects.find do |concert_object|
