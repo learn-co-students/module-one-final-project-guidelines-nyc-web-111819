@@ -52,10 +52,12 @@ def intro
         $stdout.print "What will be your password? "
         password = $stdin.noecho(&:gets)
         password.strip!
+        currUser = User.create(user_name: user_input, password: password)
         sleep(0.6)
         puts "Great, you're all set!"
         sleep(0.6)
     end
+    currUser
 end
 
 def train_selection
@@ -80,8 +82,12 @@ def another_train
     end
 end
 
+def view_searches(currUser)
+    Search.where(user_name: currUser.user_name).each{|search| puts "#{search.train_name}"}
+end
+
 def runner
-    intro
+    currUser = intro
     f = true
     while f == true
         puts "Press 't' to select a train, 's' to view search history, or 'x' to exit, "
@@ -90,7 +96,7 @@ def runner
             train_selection
             another_train
         elsif input == 's'
-            view_searches
+            view_searches(currUser)
         elsif input == 'x'
             puts "Goodbye!"
             f = false

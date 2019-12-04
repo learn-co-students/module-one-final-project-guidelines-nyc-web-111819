@@ -4,7 +4,7 @@ class CreateSearchesTable < ActiveRecord::Migration[6.0]
       t.string :user_name
       t.string :train_name
       
-      t.timestamps
+      t.timestamps 
     end
   end
 end
