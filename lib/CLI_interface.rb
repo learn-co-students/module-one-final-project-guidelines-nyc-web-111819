@@ -17,7 +17,7 @@ def findTrainStatus(currUser, trainName)
 end
 
 def intro
-    puts "Hello New Yorker! Been here before?"
+    puts "Hello New Yorker! Tried us before?"
     user_input = gets.chomp
     if user_input == "Yes" || user_input == "yes" || user_input == "Y" || user_input == "y"
         sleep(0.5)
@@ -53,8 +53,12 @@ def intro
         user_input = gets.chomp
         sleep(0.5)
         puts "Nice to meet you #{user_input}!"
+        if user_input == User.find_by(user_name: user_input).user_name
+            puts "Oh oh, we already have #{user_input} in our database. Please pick a different name."
+            user_input = gets.chomp
+        end
         prompt = TTY::Prompt.new(enable_color: false)
-        password = prompt.mask("What will be your password? ")
+        password = prompt.mask("Great, what will be your password? ")
         currUser = User.create(user_name: user_input, password: password)
         currUser.save
         sleep(0.5)
