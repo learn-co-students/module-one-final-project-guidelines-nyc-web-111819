@@ -9,7 +9,7 @@ require 'active_record'
 
 def findTrainStatus(currUser, trainName)
     status = (Line.find_by(train_name: trainName)).status
-    search = Search.new(user_name: currUser.user_name, train_status: status, train_name: trainName)
+    search = Search.new(user_name: currUser.user_name, train_status: status, train_name: trainName, time: Time.new.to_s[0..-7])
     search.save
     status
 end
@@ -98,7 +98,7 @@ end
 
 def view_searches(currUser)
     puts ""
-    Search.where(user_name: currUser.user_name).order(created_at: :desc).each{|search| puts "#{search.train_name}: #{search.train_status}"}
+    Search.where(user_name: currUser.user_name).order(created_at: :desc).each{|search| puts "[#{search.time}] #{search.train_name}: #{search.train_status}"}
 end
 
 def runner
