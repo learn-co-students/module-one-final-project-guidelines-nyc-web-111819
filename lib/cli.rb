@@ -49,6 +49,7 @@ def login
             PROMPT.error("Sorry Username Not Found!")
             create_user
         end
+        binding.pry
 end
 
 def options 
@@ -57,7 +58,8 @@ def options
         option.choice "Show my events", 2
         option.choice "Delete an event", 3
         option.choice "Delete account", 4
-        option.choice "Exit", 5
+        option.choice "Profile", 5
+        option.choice "Exit", 6
     end 
 
     if selection == 1 
@@ -79,7 +81,12 @@ def options
     elsif 
         selection == 4 
         delete_myself 
+        exit
+    elsif
+        selection == 5
+        update_username
         go_back
+
     else
         sleep (1)
             puts "Goodbye!"
@@ -140,31 +147,11 @@ def event_names
     end 
 end 
 
-# def event_names 
-#     @@user.events.map do |event|
-#         Concert.all.find(event.concert_id).name
-#     end
-# end 
 
 def select_event
-
     event_name = PROMPT.select("Which event are you looking for?", event_names)
-    binding.pry
     Event.find_by(name: "#{event_name}")
-#    test = @@user.events.filter do |event|
-#         concert_objects.find do |concert_object|
-#             event.concert_id == concert_object.id 
-#         end 
-#     end 
-    
-          # menu.choice "Go Back to Main Menu"
-      # end
-
-       #if event == "Go Back to Main Menu"
-       #options
-       #end
-   
-   end
+end
 
 
 
@@ -183,12 +170,19 @@ def delete_event
     my_event = select_event
     my_event.destroy
     @@user.reload
-    binding.pry
     puts "Event Succesfully Deleted!"
     PROMPT.yes?("Would you like to go back?")
     go_back  
 end
 
+def update_username
+    puts "Welcome #{@@user.name}, to your profile!"
+    PROMPT.yes?("Would you like to change your Username?")
+    if "yes"
+        input = gets.chomp
+        @@user.update(name: "#{input}")
+    end
+end
 
 
 def go_back
