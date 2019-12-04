@@ -3,6 +3,7 @@ class CreateEvents < ActiveRecord::Migration[6.0]
     create_table :events do |t|
       t.integer :user_id
       t.integer :concert_id
+      t.string :name
       t.timestamps  
    end
   end
