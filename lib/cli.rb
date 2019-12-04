@@ -16,10 +16,7 @@ def welcome
     new_user
     options
     get_artist_events
-    binding.pry
 end
-
-#login to get username
 
 #Allows user to Sign up or Login
     def new_user
@@ -39,11 +36,13 @@ end
 
     def create_user(username)
         User.create(name: username) 
+        system 'clear'
     end
 
 def login
     username = PROMPT.ask("Welcome Back!😄 What's your Username?🤔🧐".colorize(:yellow), required: true)
         user = User.find_by(name: username)
+        system 'clear'
         if user 
             @@user = user
         else
@@ -65,6 +64,7 @@ def options
         artist = artist_prompt
         event_list = get_artist_events(artist)
         choose_concert(event_list)
+        system 'clear'
         go_back
     elsif 
         selection == 2
@@ -103,34 +103,28 @@ def get_artist_events(artist)
     events_string = RestClient.get("https://api.songkick.com/api/3.0/artists/#{artist_id}/calendar.json?apikey=io09K9l3ebJxmxe2
      ")
     events_hash = JSON.parse(events_string)
-    
-    # @@concert_name = events_hash["resultsPage"]["results"]["event"][0]["displayName"]
-     
+         
     #map through and get array of display name for event
     event_array = events_hash["resultsPage"]["results"]["event"].map do |event|
         event["displayName"]
     end 
 end
 
-
-
 def choose_concert(event_list)
     selection = PROMPT.select("Choose your concert?", event_list)
     new_concert = Concert.create(name: "#{selection}")
-    new_event = Event.create(user_id: "#{@@user.id}", concert_id: "#{new_concert.id}")
+    new_event = Event.create(user_id: "#{@@user.id}", concert_id: "#{new_concert.id}", name: "#{selection}")
     puts "You just saved an event!"
-    
 end 
 
 def show_my_events 
-    concert_names.each do |concert_name|
-        puts concert_name
+    event_names.each do |event_name|
+        puts event_name
     end 
     choice = PROMPT.select("Would you like to go back?", ["yes"])
     if choice == "yes"
         go_back
-    end  
-
+    end
 end 
 
 def concert_names
@@ -139,16 +133,24 @@ def concert_names
     end 
 end
 
-# def event_objects
-#     # Event.all.select do |event|
-#     #     event.user_id == @@user.id
-#     # end
-# end
+def event_names 
+    @@user.reload
+    @@user.events.map do |event|
+        event.name 
+    end 
+end 
+
+# def event_names 
+#     @@user.events.map do |event|
+#         Concert.all.find(event.concert_id).name
+#     end
+# end 
 
 def select_event
-    concert_names2 = PROMPT.select("Which event are you looking for?", concert_names)
-    concert_object = Concert.find_by(name: "#{concert_names2}")
-    Event.find_by(concert_id: concert_object.id)
+
+    event_name = PROMPT.select("Which event are you looking for?", event_names)
+    binding.pry
+    Event.find_by(name: "#{event_name}")
 #    test = @@user.events.filter do |event|
 #         concert_objects.find do |concert_object|
 #             event.concert_id == concert_object.id 
@@ -176,17 +178,16 @@ def delete_myself
     @@user.destroy
 end 
 
-    def delete_event
-        puts "Here are #{@@user.name}'s events!"
-        my_event = select_event
-        binding.pry
-        my_event.destroy
-        @@user
-         puts "Event Succesfully Deleted!"
-        PROMPT.yes?("Would you like to go back?")
-        go_back  
-        
-    end
+def delete_event
+    puts "Here are #{@@user.name}'s events!"
+    my_event = select_event
+    my_event.destroy
+    @@user.reload
+    binding.pry
+    puts "Event Succesfully Deleted!"
+    PROMPT.yes?("Would you like to go back?")
+    go_back  
+end
 
 
 
