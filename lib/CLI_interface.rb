@@ -7,8 +7,11 @@ require 'active_support/core_ext'
 require 'active_record'
 
 
-def findTrainStatus(trainName)
-    (Line.find_by(train_name: trainName)).status
+def findTrainStatus(currUser, trainName)
+    status = (Line.find_by(train_name: trainName)).status
+    search = Search.new(user_name: currUser.user_name, train_status: status, train_name: trainName)
+    search.save
+    status
 end
 
 def intro
@@ -53,6 +56,7 @@ def intro
         password = $stdin.noecho(&:gets)
         password.strip!
         currUser = User.create(user_name: user_input, password: password)
+        currUser.save
         sleep(0.6)
         puts "Great, you're all set!"
         sleep(0.6)
@@ -60,20 +64,28 @@ def intro
     currUser
 end
 
-def train_selection
-    puts "What train would you like to take?"
-    user_input = gets.chomp
-    puts findTrainStatus(user_input)
-end 
+def train_selection(currUser)
+    f = false
+    while f == false
+        puts "What train would you like to take?"
+        user_input = gets.chomp
+        if Line.find_by(train_name: user_input) == nil
+            puts "Invalid train line!"
+        else
+            puts findTrainStatus(currUser, user_input)
+            f = true
+        end
+    end
+end
 
-def another_train
+def another_train(currUser)
     f = true
     while f == true
         puts "Would you like to check another train?"
         user_input = gets.chomp
         if user_input == "Yes" || user_input == "yes" || user_input == "Y" || user_input == "y"
             sleep(0.7)
-            train_selection
+            train_selection(currUser)
         else
             sleep(0.7)
             puts "Ok, have a great day!"
@@ -83,23 +95,27 @@ def another_train
 end
 
 def view_searches(currUser)
-    Search.where(user_name: currUser.user_name).each{|search| puts "#{search.train_name}"}
+    puts ""
+    Search.where(user_name: currUser.user_name).order(created_at: :desc).each{|search| puts "#{search.train_name}: #{search.train_status}"}
 end
 
 def runner
     currUser = intro
     f = true
     while f == true
-        puts "Press 't' to select a train, 's' to view search history, or 'x' to exit, "
+        puts "Press 't' to select a train, 's' to view search history, 'c' to clear search history, or 'x' to exit, "
         input = gets.chomp
         if input == 't'
-            train_selection
-            another_train
+            train_selection(currUser)
+            another_train(currUser)
         elsif input == 's'
             view_searches(currUser)
         elsif input == 'x'
             puts "Goodbye!"
             f = false
+        elsif input == 'c'
+            Search.destroy_by(user_name: currUser.user_name)
+            puts "Search history cleared!"
         else
             puts "Invalid input!"
         end
