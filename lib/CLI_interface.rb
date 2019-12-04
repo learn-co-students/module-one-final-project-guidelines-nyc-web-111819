@@ -53,7 +53,7 @@ def intro
         user_input = gets.chomp
         sleep(0.5)
         puts "Nice to meet you #{user_input}!"
-        if user_input == User.find_by(user_name: user_input).user_name
+        if User.find_by(user_name: user_input)
             puts "Oh oh, we already have #{user_input} in our database. Please pick a different name."
             user_input = gets.chomp
         end
@@ -95,7 +95,7 @@ end
 def another_train(currUser)
     f = true
     while f == true
-        puts "Would you like to check another train?"
+        puts "Would you like to check another train? (yes/no)"
         user_input = gets.chomp
         if user_input == "Yes" || user_input == "yes" || user_input == "Y" || user_input == "y"
             sleep(0.7)
