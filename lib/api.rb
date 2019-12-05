@@ -9,6 +9,7 @@ require 'nokogiri'
 def sorting_api_data
     Thread.new do
         loop do
+            Line.destroy_all
             response_string = RestClient.get('http://web.mta.info/status/serviceStatus.txt')
             response = JSON.parse(Hash.from_xml(response_string).to_json)
             response["service"]["subway"]["line"][0..-2].each do |line|
@@ -17,20 +18,7 @@ def sorting_api_data
                 else
                     line["text"] = line["text"].gsub("<br clear=left>"," ")
                     elaboration = Nokogiri::HTML(CGI.unescapeHTML(line["text"])).content.squish
-                    elaboration = elaboration.gsub("Dec"," Dec")
-                    elaboration = elaboration.gsub("Planned Work","~Planned Work")
-                    elaboration = elaboration.gsub("Delays","~Delays")
-                    elaboration = elaboration.split("~")
-
-                    line["name"].split("").each do |indiv|
-                        if elaboration.select{|text| text.include?"[#{indiv}]"} == []
-                            lineData = Line.create(train_name: indiv, status: "GOOD SERVICE", elaborate: "N/A")
-                            lineData.save
-                        else
-                            lineData = Line.create(train_name: indiv, status: line["status"], elaborate: elaboration.select{|text| text.include?"[#{indiv}]"})
-                            lineData.save
-                        end
-                    end
+                    line["name"].split("").each{|indiv| Line.create(train_name: indiv, status: line["status"], elaborate: elaboration)}
                 end
             end
             sleep(300)

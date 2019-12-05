@@ -70,7 +70,7 @@ def intro
 end
 
 def train_selection(currUser)
-    system "clear"
+    clear
     f = false
     while f == false
         puts "What train would you like to take?"
@@ -80,14 +80,27 @@ def train_selection(currUser)
             puts "Invalid train line!"
         else
             status = findTrainStatus(currUser, user_input)
+            elaboration = (Line.find_by(train_name: user_input)).elaborate
+            elaboration = elaboration.gsub("Dec"," Dec")
+            elaboration = elaboration.gsub("Planned Work","~Planned Work")
+            elaboration = elaboration.gsub("Delays","~Delays")
+            elaboration = elaboration.gsub("SOME REROUTES", "~SOME REROUTES")
+            elaboration = elaboration.split("~")
+            elaboration = elaboration.map{|item| item[0..-2]}
+            screen = elaboration.select{|alert| alert.include? "[#{user_input}]"}
+            if screen.length == 0
+                status = "GOOD SERVICE"
+            end
             puts status
             if status != "GOOD SERVICE"
                 puts "Press 'i' for more information or any other key to continue"
                 user = gets.chomp
                 if user == 'i'
-                    status = (Line.find_by(train_name: user_input)).elaborate
-                    puts status
-                    #status.each{|alert| puts alert}
+                    screen.each do |item|
+                        puts ""
+                        puts item
+                        puts ""
+                    end
                 end
             end
             f = true
@@ -96,7 +109,6 @@ def train_selection(currUser)
 end
 
 def another_train(currUser)
-    system "clear"
     f = true
     while f == true
         puts "Would you like to check another train? (yes/no)"
@@ -125,10 +137,13 @@ def view_searches(currUser)
     end
 end
 
+def clear
+    system "clear"
+end
+
 def runner
     sorting_api_data
     currUser = intro
-    system "clear"
     f = true
     while f == true
         puts "Press 't' to select a train, 's' to view search history, 'c' to clear search history, or 'u' to update your password. Press 'x' to exit."
