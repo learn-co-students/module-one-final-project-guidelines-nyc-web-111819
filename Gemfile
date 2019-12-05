@@ -12,3 +12,6 @@ gem 'activesupport'
 gem "rake"
 gem 'nokogiri'
 gem 'cgi'
+gem 'colorize'
+gem 'rmagick', '~> 2.15'
+gem 'catpix'
