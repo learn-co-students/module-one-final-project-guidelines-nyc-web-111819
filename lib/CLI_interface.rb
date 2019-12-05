@@ -17,6 +17,7 @@ def findTrainStatus(currUser, trainName)
 end
 
 def intro
+    system "clear"
     puts "Hello New Yorker! Tried us before?"
     user_input = gets.chomp
     if user_input == "Yes" || user_input == "yes" || user_input == "Y" || user_input == "y"
@@ -69,10 +70,12 @@ def intro
 end
 
 def train_selection(currUser)
+    system "clear"
     f = false
     while f == false
         puts "What train would you like to take?"
         user_input = gets.chomp
+        user_input.capitalize!
         if Line.find_by(train_name: user_input) == nil
             puts "Invalid train line!"
         else
@@ -93,6 +96,7 @@ def train_selection(currUser)
 end
 
 def another_train(currUser)
+    system "clear"
     f = true
     while f == true
         puts "Would you like to check another train? (yes/no)"
@@ -111,6 +115,7 @@ def another_train(currUser)
 end
 
 def view_searches(currUser)
+    system "clear"
     if Search.where(user_name: currUser.user_name) == []
         sleep(0.5)
         puts "No history!"
@@ -123,6 +128,7 @@ end
 def runner
     sorting_api_data
     currUser = intro
+    system "clear"
     f = true
     while f == true
         puts "Press 't' to select a train, 's' to view search history, 'c' to clear search history, or 'u' to update your password. Press 'x' to exit."
