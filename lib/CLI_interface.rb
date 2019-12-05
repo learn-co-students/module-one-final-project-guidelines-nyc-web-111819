@@ -108,7 +108,7 @@ def train_selection(currUser)
             when status.include?("REROUTES")
                 puts "#{status} ⚠️ 👹".colorize(:red)
             else
-                puts status
+                puts status.colorize(:blue)
             end
 
             if status != "GOOD SERVICE"
