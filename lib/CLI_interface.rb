@@ -7,6 +7,8 @@ require 'active_support/core_ext'
 require 'active_record'
 require_relative 'api.rb'
 require "tty-prompt"
+require 'colorize'
+require 'catpix'
 
 
 def findTrainStatus(currUser, trainName)
@@ -16,8 +18,12 @@ def findTrainStatus(currUser, trainName)
     status
 end
 
+
 def intro
     system "clear"
+    Catpix::print_image "/Users/natalie/Documents/module-one-final-project-guidelines-nyc-web-111819/lib/subway lines.png"
+    sleep(1.2)
+    clear
     puts "Hello New Yorker! Tried us before?"
     user_input = gets.chomp
     if user_input == "Yes" || user_input == "yes" || user_input == "Y" || user_input == "y"
@@ -53,7 +59,7 @@ def intro
         puts "What's your name?"
         user_input = gets.chomp
         sleep(0.5)
-        puts "Nice to meet you #{user_input}!"
+        print "Nice to meet you #{user_input}! "
         if User.find_by(user_name: user_input)
             puts "Oh oh, we already have #{user_input} in our database. Please pick a different name."
             user_input = gets.chomp
@@ -91,7 +97,20 @@ def train_selection(currUser)
             if screen.length == 0
                 status = "GOOD SERVICE"
             end
-            puts status
+            
+            case 
+            when status.include?("GOOD SERVICE")
+                puts "#{status} 🍾 🙌 🎉".colorize(:green)
+            when status.include?("PLANNED WORK")
+                puts "#{status} ⚙️ 🛠".colorize(:yellow)
+            when status.include?("DELAYS")
+                puts "#{status} ⚠️ 🚨".colorize(:red)
+            when status.include?("REROUTES")
+                puts "#{status} ⚠️ 👹".colorize(:red)
+            else
+                puts status
+            end
+
             if status != "GOOD SERVICE"
                 puts "Press 'i' for more information or any other key to continue"
                 user = gets.chomp
@@ -162,6 +181,10 @@ def runner
             puts "Password updated!"
         elsif input == 'x'
             puts "Goodbye!"
+            system "clear"
+            Catpix::print_image "/Users/natalie/Documents/module-one-final-project-guidelines-nyc-web-111819/lib/giphy.gif"
+            sleep(5)
+            system "clear"
             f = false
         elsif input == 'c'
             Search.destroy_by(user_name: currUser.user_name)
@@ -172,4 +195,5 @@ def runner
     end
 end
 
-runner
+# runner
+
