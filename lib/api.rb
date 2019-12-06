@@ -11,6 +11,7 @@ def sorting_api_data
         loop do
             Line.destroy_all
             response_string = RestClient.get('http://web.mta.info/status/serviceStatus.txt')
+            response_string.gsub!("NQR","NQRW")
             response = JSON.parse(Hash.from_xml(response_string).to_json)
             response["service"]["subway"]["line"][0..-2].each do |line|
                 if line["text"] == nil
@@ -21,7 +22,7 @@ def sorting_api_data
                     line["name"].split("").each{|indiv| Line.create(train_name: indiv, status: line["status"], elaborate: elaboration)}
                 end
             end
-            sleep(300)
+            sleep(100)
         end
     end
 end

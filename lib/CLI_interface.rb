@@ -1,11 +1,12 @@
 
 require_relative "../config/environment.rb"
+require_relative 'api.rb'
+require_relative 'location.rb'
 require 'pry'
 require 'io/console'
 require 'active_support'
 require 'active_support/core_ext'
 require 'active_record'
-require_relative 'api.rb'
 require "tty-prompt"
 
 
@@ -69,18 +70,32 @@ def intro
     currUser
 end
 
-def train_selection(currUser)
-    clear
+def train_selection(currUser, auto, *auto_input)
     f = false
+    validInput = false
     while f == false
-        puts "What train would you like to take?"
-        user_input = gets.chomp
-        user_input.capitalize!
-        if Line.find_by(train_name: user_input) == nil
-            puts "Invalid train line!"
-        else
+        if auto == false
+            clear
+            puts "What train would you like to take?"
+            user_input = gets.chomp
+            user_input.capitalize!
+            if Line.find_by(train_name: user_input) == nil
+                puts "Invalid train line!"
+                sleep(1)
+                validInput = false
+            else
+                validInput = true
+            end
+        end
+        if auto == true
+            user_input = auto_input
+        end
+        if validInput == true || auto == true
+            if auto == true
+                puts user_input
+            end
             status = findTrainStatus(currUser, user_input)
-            elaboration = (Line.find_by(train_name: user_input)).elaborate
+            elaboration = (Line.find_by(train_name: user_input[0])).elaborate
             elaboration = elaboration.gsub("Dec"," Dec")
             elaboration = elaboration.gsub("Planned Work","~Planned Work")
             elaboration = elaboration.gsub("Delays","~Delays")
@@ -103,7 +118,7 @@ def train_selection(currUser)
                     end
                 end
             end
-            f = true
+        f = true
         end
     end
 end
@@ -115,9 +130,11 @@ def another_train(currUser)
         user_input = gets.chomp
         if user_input == "Yes" || user_input == "yes" || user_input == "Y" || user_input == "y"
             sleep(0.7)
-            train_selection(currUser)
+            clear
+            train_selection(currUser, false)
         elsif user_input == "No" || user_input == "no" || user_input == "n" || user_input == "N"
             sleep(0.7)
+            clear
             puts "Ok, have a great day!"
             f = false
         else
@@ -144,12 +161,13 @@ end
 def runner
     sorting_api_data
     currUser = intro
+    clear
     f = true
     while f == true
-        puts "Press 't' to select a train, 's' to view search history, 'c' to clear search history, or 'u' to update your password. Press 'x' to exit."
+        puts "Press 't' to select a train, 'l' to check status of nearest train lines, 's' to view search history, 'c' to clear search history, or 'u' to update your password. Press 'x' to exit."
         input = gets.chomp
         if input == 't'
-            train_selection(currUser)
+            train_selection(currUser, false)
             another_train(currUser)
         elsif input == 's'
             view_searches(currUser)
@@ -163,6 +181,18 @@ def runner
         elsif input == 'x'
             puts "Goodbye!"
             f = false
+        elsif input == 'l'
+            puts "Enter your current location!"
+            query = gets.chomp
+            answer = station_by_location(query)
+            clear
+            puts answer[0]
+            lines = answer[1]
+            lines = lines.split("")
+            lines.each{|line| train_selection(currUser, true, line)}
+            puts "Press 'c' to continue!"
+            input = gets.chomp
+            clear
         elsif input == 'c'
             Search.destroy_by(user_name: currUser.user_name)
             puts "Search history cleared!"
