@@ -22,7 +22,7 @@ end
 
 def intro
     system "clear"
-    Catpix::print_image "/Users/natalie/Documents/module-one-final-project-guidelines-nyc-web-111819/lib/subway lines.png"
+    Catpix::print_image "lib/subway lines.png"
     sleep(1.2)
     clear
     puts "Hello New Yorker! Tried us before?"
@@ -204,7 +204,7 @@ def runner
             puts "Goodbye!"
             system "clear"
             pid = fork{ exec 'mpg123', '-q', "lib/audio/big-crowd-cheering.mp3" }
-            Catpix::print_image "/Users/natalie/Documents/module-one-final-project-guidelines-nyc-web-111819/lib/giphy.gif"
+            Catpix::print_image "lib/giphy.gif"
             sleep(5)
             system "clear"
             f = false
