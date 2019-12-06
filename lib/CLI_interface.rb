@@ -211,7 +211,7 @@ def runner
             system "clear"
             f = false
         elsif input == 'l'
-            puts "Enter your current location"
+            puts "Enter your location"
             query = gets.chomp
             answer = station_by_location(query)
             clear
