@@ -230,6 +230,7 @@ def runner
             clear
         elsif input == 'c'
             Search.destroy_by(user_name: currUser.user_name)
+            clear
             puts "Search history cleared!"
         else
             puts "Invalid input!"
