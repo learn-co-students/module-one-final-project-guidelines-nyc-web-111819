@@ -22,7 +22,7 @@ end
 
 def intro
     system "clear"
-    Catpix::print_image "/Users/natalie/Documents/module-one-final-project-guidelines-nyc-web-111819/lib/subway lines.png"
+    Catpix::print_image "/Users/alex/Documents/GitHub/module-one-final-project-guidelines-nyc-web-111819/lib/subway lines.png"
     sleep(1.2)
     clear
     puts "Hello New Yorker! Tried us before?"
@@ -200,7 +200,7 @@ def runner
         elsif input == 'x'
             puts "Goodbye!"
             system "clear"
-            Catpix::print_image "/Users/natalie/Documents/module-one-final-project-guidelines-nyc-web-111819/lib/giphy.gif"
+            Catpix::print_image "/Users/alex/Documents/GitHub/module-one-final-project-guidelines-nyc-web-111819/lib/giphy.gif"
             sleep(5)
             system "clear"
             f = false
@@ -224,6 +224,3 @@ def runner
         end
     end
 end
-
-# runner
-

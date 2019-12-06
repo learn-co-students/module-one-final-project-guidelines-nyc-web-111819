@@ -11,7 +11,7 @@ require 'geocoder'
 def station_by_location(query)
     api_ingest = RestClient.get('https://data.cityofnewyork.us/resource/kk4q-3rt2.json')
     query.gsub!(" ", "%20")
-    query = query+"%20NYC"
+    query = query+"%20NYC,%20NY,%20USA"
     api2_ingest = RestClient.get("http://dev.virtualearth.net/REST/v1/Locations?query=#{query}&maxResults=1&key=AmFMb_6ghSBBkoJi4geOc0UCLYP1Ap14DUJ_LRybzlbrufnUQZy-gN0SmpaTQ6yJ")
     cleanData = JSON.parse(api_ingest)
     myLoc = JSON.parse(api2_ingest)["resourceSets"][0]["resources"][0]["geocodePoints"][0]["coordinates"]
