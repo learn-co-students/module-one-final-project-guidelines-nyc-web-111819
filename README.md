@@ -1,14 +1,25 @@
 # Module One Final Project - MTA Status App
 
-For our final project, we've built a Command Line database application.
+For our final project, we've built a Command Line database application to check status of MTA trains.
 
 ## Project Description
 
-short description
+Users are able to sign up/log in, check t
 
-install instructions, 
-a contributors guide 
-link to the license for your code.
+## Install Instructions
+
+Fork
+Clone
+Bundle Install 
+rake db:migrate
+rake db:seed
+run /bin/run.rb
+
+## Contributors Guide 
+
+## License
+
+
 
 ### Option Two - Command Line CRUD App
 
