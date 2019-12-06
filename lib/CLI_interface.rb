@@ -135,6 +135,8 @@ def train_selection(currUser, auto, *auto_input)
                 user = gets.chomp
                 if user == 'i'
                     screen.each do |item|
+                        clear
+                        puts user_input
                         puts ""
                         puts item
                         puts ""
@@ -209,7 +211,7 @@ def runner
             system "clear"
             f = false
         elsif input == 'l'
-            puts "Enter your current location!"
+            puts "Enter your current location"
             query = gets.chomp
             answer = station_by_location(query)
             clear
@@ -219,7 +221,7 @@ def runner
             lines.each{|line| train_selection(currUser, true, line)}
             puts "Press any key to continue"
             input = gets.chomp
-            puts "Press 'd' for directions to this station"
+            puts "Press 'd' for directions to this station or any other key to continue"
             input = gets.chomp
             if input == 'd'
                 clear

@@ -36,5 +36,3 @@ def station_by_location(query)
     linestring = [closestStation["name"],linestring.gsub(/[[:punct:]]/, ''), json]
     linestring
 end
-
-station_by_location("Times Square")
