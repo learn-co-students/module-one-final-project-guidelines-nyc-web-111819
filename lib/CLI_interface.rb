@@ -98,9 +98,11 @@ def train_selection(currUser, auto, *auto_input)
         end
         if validInput == true || auto == true
             if auto == true
+                puts ""
                 puts user_input
+                user_input = user_input
             end
-            status = findTrainStatus(currUser, user_input)
+            status = findTrainStatus(currUser, user_input[0])
             elaboration = (Line.find_by(train_name: user_input[0])).elaborate
             elaboration = elaboration.gsub("Dec"," Dec")
             elaboration = elaboration.gsub("Planned Work","~Planned Work")
@@ -108,11 +110,10 @@ def train_selection(currUser, auto, *auto_input)
             elaboration = elaboration.gsub("SOME REROUTES", "~SOME REROUTES")
             elaboration = elaboration.split("~")
             elaboration = elaboration.map{|item| item[0..-2]}
-            screen = elaboration.select{|alert| alert.include? "[#{user_input}]"}
+            screen = elaboration.select{|alert| alert.include? "[#{user_input[0]}]"}
             if screen.length == 0
                 status = "GOOD SERVICE"
             end
-            
             case 
             when status.include?("GOOD SERVICE")
                 pid = fork{ exec 'mpg123', '-q', "lib/audio/tada-sound.mp3" }
@@ -201,7 +202,6 @@ def runner
             sleep(0.5)
             puts "Password updated!"
         elsif input == 'x'
-            puts "Goodbye!"
             system "clear"
             pid = fork{ exec 'mpg123', '-q', "lib/audio/big-crowd-cheering.mp3" }
             Catpix::print_image "lib/giphy.gif"
@@ -217,7 +217,15 @@ def runner
             lines = answer[1]
             lines = lines.split("")
             lines.each{|line| train_selection(currUser, true, line)}
-            puts "Press 'c' to continue!"
+            puts "Press any key to continue"
+            input = gets.chomp
+            puts "Press 'd' for directions to this station"
+            input = gets.chomp
+            if input == 'd'
+                clear
+                puts answer[2]
+            end
+            puts "Press any key to continue"
             input = gets.chomp
             clear
         elsif input == 'c'

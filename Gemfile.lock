@@ -138,6 +138,7 @@ DEPENDENCIES
   catpix
   cgi
   colorize
+  dotenv
   dotenv-rails
   geocoder
   json
