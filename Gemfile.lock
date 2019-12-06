@@ -26,10 +26,17 @@ GEM
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2)
     builder (3.2.3)
+    catpix (0.2.0)
+      docopt (~> 0.5, >= 0.5.0)
+      rmagick (~> 2.15, >= 2.15.2)
+      ruby-terminfo (~> 0.1, >= 0.1.1)
+      tco (~> 0.1, >= 0.1.8)
     cgi (0.1.0)
     coderay (1.1.2)
+    colorize (0.8.1)
     concurrent-ruby (1.1.5)
     crass (1.0.5)
+    docopt (0.6.1)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.7.5)
@@ -89,6 +96,8 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rgeo (2.1.1)
+    rmagick (2.16.0)
+    ruby-terminfo (0.1.1)
     sinatra (2.0.7)
       mustermann (~> 1.0)
       rack (~> 2.0)
@@ -99,6 +108,7 @@ GEM
       sinatra (>= 1.0)
     sqlite3 (1.4.1)
     thor (0.20.3)
+    tco (0.1.8)
     thread_safe (0.3.6)
     tilt (2.0.10)
     tty-color (0.5.0)
@@ -125,9 +135,11 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport
+  catpix
   cgi
   dotenv-rails
   geocoder
+  colorize
   json
   nokogiri
   pry
@@ -135,6 +147,7 @@ DEPENDENCIES
   require_all
   rest-client
   rgeo
+  rmagick (~> 2.15)
   sinatra-activerecord
   sqlite3 (~> 1.4)
   tty-prompt
