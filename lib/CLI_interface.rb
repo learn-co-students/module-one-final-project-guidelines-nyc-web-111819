@@ -22,7 +22,7 @@ end
 
 def intro
     system "clear"
-    Catpix::print_image "/Users/alex/Documents/GitHub/module-one-final-project-guidelines-nyc-web-111819/lib/subway lines.png"
+    Catpix::print_image "lib/subway lines.png"
     sleep(1.2)
     clear
     puts "Hello New Yorker! Tried us before?"
@@ -115,10 +115,13 @@ def train_selection(currUser, auto, *auto_input)
             
             case 
             when status.include?("GOOD SERVICE")
+                pid = fork{ exec 'mpg123', '-q', "lib/audio/tada-sound.mp3" }
                 puts "#{status} 🍾 🙌 🎉".colorize(:green)
             when status.include?("PLANNED WORK")
+                pid = fork{ exec 'mpg123', '-q', "lib/audio/game-fail-sound-effect.mp3" }
                 puts "#{status} ⚙️ 🛠".colorize(:yellow)
             when status.include?("DELAYS")
+                pid = fork{ exec 'mpg123', '-q', "lib/audio/game-fail-sound-effect.mp3" }
                 puts "#{status} ⚠️ 🚨".colorize(:red)
             when status.include?("REROUTES")
                 puts "#{status} ⚠️ 👹".colorize(:red)
@@ -200,7 +203,8 @@ def runner
         elsif input == 'x'
             puts "Goodbye!"
             system "clear"
-            Catpix::print_image "/Users/alex/Documents/GitHub/module-one-final-project-guidelines-nyc-web-111819/lib/giphy.gif"
+            pid = fork{ exec 'mpg123', '-q', "lib/audio/big-crowd-cheering.mp3" }
+            Catpix::print_image "lib/giphy.gif"
             sleep(5)
             system "clear"
             f = false
