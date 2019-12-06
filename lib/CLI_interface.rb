@@ -186,7 +186,7 @@ def runner
     clear
     f = true
     while f == true
-        puts "Press 't' to select a train, 'l' to check status of nearest train lines, 's' to view search history, 'c' to clear search history, or 'u' to update your password. Press 'x' to exit."
+        puts "Press 't' to select a train, \n 'l' to check status of nearest train lines, \n 's' to view search history, \n 'c' to clear search history, \n 'u' to update your password. \n Press 'x' to exit."
         input = gets.chomp
         if input == 't'
             train_selection(currUser, false)
