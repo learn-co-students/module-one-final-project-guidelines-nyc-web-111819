@@ -1,5 +1,4 @@
 require_relative '../config/environment'
+require_relative '../lib/CLI_interface'
 
-
-
-puts "HELLO WORLD"
+runner
